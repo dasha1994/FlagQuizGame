@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.Button;
@@ -19,6 +20,7 @@ import android.widget.ImageView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
+
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -142,7 +144,7 @@ public class FlagQuizGame extends Activity {
         Collections.shuffle(fileNameList);
 
         int correct = fileNameList.indexOf(correctAnswer);
-        fileNameList.add(fileNameList.remove(correct));
+       // fileNameList.add(fileNameList.remove(correct));
 
         LayoutInflater inflater = (LayoutInflater)getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         for(int row = 0; row<guessRows;row++)
@@ -151,7 +153,6 @@ public class FlagQuizGame extends Activity {
             for(int column = 0;column<3;column++)
             {
                 Button newGuessButton = (Button)inflater.inflate(R.layout.guess_button,null);
-
                 String fileName = fileNameList.get((row*3)+column);
                 newGuessButton.setText(getCountryName(fileName));
                 newGuessButton.setOnClickListener(guessButtonListener);
@@ -178,7 +179,7 @@ public class FlagQuizGame extends Activity {
         String guess = guessButton.getText().toString();
         String answer = getCountryName(correctAnswer);
         ++totalGuesses;
-        if(guess.equals(correctAnswer))
+        if(guess.equals(answer))
         {
             ++totalCorrectAnswers;
             answerTextView.setText(answer + "!");
@@ -218,6 +219,7 @@ public class FlagQuizGame extends Activity {
             flagImageView.startAnimation(shakeAnimation);
             answerTextView.setText("Incorrect!");
             answerTextView.setTextColor(getResources().getColor(R.color.incorrect_answer));
+            guessButton.setEnabled(false);
         }
     }
     private void disableButtons()
@@ -254,7 +256,7 @@ public class FlagQuizGame extends Activity {
                 choicesBuilder.setItems(R.array.guesssesList, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        guessRows = Integer.parseInt(possibleChoices[which].toString());
+                        guessRows = Integer.parseInt(possibleChoices[which].toString())/3;
                         resetQuiz();
                     }
                 });
@@ -294,11 +296,11 @@ public class FlagQuizGame extends Activity {
         }
         return super.onOptionsItemSelected(item);
     }
-    private View.OnClickListener guessButtonListener = new View.OnClickListener() {
+    private OnClickListener guessButtonListener = new OnClickListener() {
         @Override
         public void onClick(View v) {
-
             submitGuess((Button)v);
         }
     };
+
 }
